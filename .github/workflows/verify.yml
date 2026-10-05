@@ -20,7 +20,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download v0.1.0-alpha.1 --repo altanmehmet/homebrew-mcpdeck --dir downloads
+          version=$(sed -n 's/^  version "\(.*\)"$/\1/p' Formula/mcpdeck.rb)
+          case "$version" in ''|*[!A-Za-z0-9.+_-]*) exit 1 ;; esac
+          printf 'MCPDECK_VERSION=%s\n' "$version" >> "$GITHUB_ENV"
+          gh release download "v$version" --repo altanmehmet/homebrew-mcpdeck --dir downloads
           sh scripts/verify-packages.sh downloads keys/allowed_signers
       - name: Run native binary and installer
         run: |
@@ -29,5 +32,5 @@ jobs:
           mkdir unpacked
           tar -xzf "downloads/mcpdeck-$platform-$arch.tar.gz" -C unpacked
           sh unpacked/install.sh --prefix "$RUNNER_TEMP/mcpdeck install"
-          "$RUNNER_TEMP/mcpdeck install/bin/mcpdeck" --version | grep '0.1.0-alpha.1'
+          "$RUNNER_TEMP/mcpdeck install/bin/mcpdeck" --version | grep -F "$MCPDECK_VERSION"
           "$RUNNER_TEMP/mcpdeck install/bin/mcpdeck" --help
