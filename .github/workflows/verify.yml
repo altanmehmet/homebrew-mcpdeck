@@ -1,0 +1,33 @@
+name: verify-binaries
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and verify alpha packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v0.1.0-alpha.1 --repo altanmehmet/homebrew-mcpdeck --dir downloads
+          sh scripts/verify-packages.sh downloads keys/allowed_signers
+      - name: Run native binary and installer
+        run: |
+          case "$(uname -s)" in Darwin) platform=darwin ;; Linux) platform=linux ;; *) exit 1 ;; esac
+          case "$(uname -m)" in arm64|aarch64) arch=arm64 ;; x86_64) arch=amd64 ;; *) exit 1 ;; esac
+          mkdir unpacked
+          tar -xzf "downloads/mcpdeck-$platform-$arch.tar.gz" -C unpacked
+          sh unpacked/install.sh --prefix "$RUNNER_TEMP/mcpdeck install"
+          "$RUNNER_TEMP/mcpdeck install/bin/mcpdeck" --version | grep '0.1.0-alpha.1'
+          "$RUNNER_TEMP/mcpdeck install/bin/mcpdeck" --help
