@@ -1,6 +1,6 @@
 # MCPDeck binary tap
 
-MCPDeck is a terminal MCP manager for macOS and Linux. It helps configure MCP
+MCPDeck is a terminal MCP manager for macOS, Linux and Windows. It helps configure MCP
 servers and personal instructions across supported coding agents, with reviewed
 installation plans, backups, discovery and removal.
 
@@ -28,9 +28,27 @@ To remove the application binary, use `brew uninstall mcpdeck`. This retains
 personal MCPDeck data and agent configuration. Use MCPDeck's Remove action to
 remove an MCP from configured agents before uninstalling the manager.
 
+## Native Windows installation
+
+Open PowerShell or Windows Terminal:
+
+```powershell
+irm https://raw.githubusercontent.com/altanmehmet/homebrew-mcpdeck/main/install.ps1 | iex
+mcpdeck
+```
+
+The installer downloads the pinned x64/ARM64 ZIP, checks its SHA-256 before
+execution and installs under `%LOCALAPPDATA%\MCPDeck\versions\<version>`.
+It updates your User PATH and the current terminal. Reopen other terminal windows.
+No WSL, Go or administrator privileges are required. Windows ARM64 is cross
+compiled and has not been tested on native ARM64 hardware.
+
+For manual ZIP installation, portable usage, updates and test scenarios, see
+[the Windows guide](WINDOWS.md). These executables are not Authenticode signed.
+
 ## Manual installation and signature verification
 
-Download all four archives, `SHA256SUMS` and `SHA256SUMS.sig` from the same release.
+Download all six archives (four for historical releases), `SHA256SUMS` and `SHA256SUMS.sig` from the same release.
 From an independently trusted checkout of this repository:
 
 ```sh
@@ -62,6 +80,12 @@ Developer ID signing or notarization. These alpha binaries are not notarized.
 - Source CI runs Go tests, vet, installation smoke and terminal interaction tests
   on macOS and Linux. Cross compiled binaries do not prove native execution on
   every architecture.
+- Native Windows x64 CI checks Go tests, vet, vulnerability scanning, archive
+  installation using PowerShell 5.1, User PATH, private ACLs and a local MCP
+  handshake plus eight profile configuration lifecycles. Public CI downloads
+  the published ZIP and exercises the pinned bootstrap and terminal command.
+  Windows interactive mouse/clipboard and actual provider accounts require
+  manual verification.
 - Other clients, remote OAuth servers and actual Oracle database access have not
   all been tested. Configuration support is not a guarantee that every MCP can
   install unattended. Provider login, credentials and reviewed approvals may be
