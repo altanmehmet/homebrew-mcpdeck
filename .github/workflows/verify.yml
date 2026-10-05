@@ -34,3 +34,28 @@ jobs:
           sh unpacked/install.sh --prefix "$RUNNER_TEMP/mcpdeck install"
           "$RUNNER_TEMP/mcpdeck install/bin/mcpdeck" --version | grep -F "$MCPDECK_VERSION"
           "$RUNNER_TEMP/mcpdeck install/bin/mcpdeck" --help
+
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned public Windows package with PowerShell 5.1
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $originalUser = [Environment]::GetEnvironmentVariable('Path', 'User')
+          $originalProcess = $env:Path
+          $prefix = Join-Path $env:RUNNER_TEMP 'mcpdeck install'
+          try {
+            & ./install.ps1 -Prefix $prefix
+            $version = (Select-String -Path Formula/mcpdeck.rb -Pattern '^  version "(.*)"$').Matches.Groups[1].Value
+            if ((mcpdeck --version) -ne "mcpdeck version $version" -or $LASTEXITCODE -ne 0) { throw 'Installed version differs from the tap.' }
+            & ./install.ps1 -Prefix $prefix
+            if (([Environment]::GetEnvironmentVariable('Path', 'User') -split ';' | Where-Object { $_.StartsWith($prefix) }).Count -ne 1) { throw 'Repeated install duplicated User PATH.' }
+            mcpdeck --help
+            if ($LASTEXITCODE -ne 0) { throw 'Installed command failed.' }
+          } finally {
+            [Environment]::SetEnvironmentVariable('Path', $originalUser, 'User')
+            $env:Path = $originalProcess
+          }
