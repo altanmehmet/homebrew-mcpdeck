@@ -10,10 +10,10 @@ function Get-MCPDeckArchiveChecksum([string]$Path) {
     try { return [BitConverter]::ToString($sha.ComputeHash($stream)).Replace('-', '').ToLowerInvariant() }
     finally { $stream.Dispose(); $sha.Dispose() }
 }
-$version = '0.1.0-alpha.2'
+$version = '0.1.0-alpha.3'
 $checksums = @{
-    amd64 = 'd2cf3a81009e2eaec9edcf53509ec73f7192a01c0b5c85a9e46e8c1b69e03284'
-    arm64 = 'b5f26d7529c02b74654e5656c768b6a26eb258dc564553945221e869b6ea9557'
+    amd64 = '9057d7e27ae2f3ad9c85921044d0bc49c037827374e1cea9509dcda5a468606d'
+    arm64 = 'bbdffe67c8663e0890f9f3cdcaa9604214eb3226a45fb99e47106397772458f8'
 }
 $machine = $env:PROCESSOR_ARCHITECTURE
 if ($env:PROCESSOR_ARCHITEW6432) { $machine = $env:PROCESSOR_ARCHITEW6432 }
@@ -38,7 +38,7 @@ try {
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $zip = [IO.Compression.ZipFile]::OpenRead($archive)
     try {
-        $expected = @('mcpdeck.exe', 'install.ps1', 'README.txt', 'AKILLI-KURULUM.md', 'INSTRUCTIONS.md', 'RECOVERY.md', 'LICENSE', 'THIRD_PARTY_NOTICES.txt')
+        $expected = @('mcpdeck.exe', 'install.ps1', 'uninstall.ps1', 'README.txt', 'AKILLI-KURULUM.md', 'INSTRUCTIONS.md', 'RECOVERY.md', 'LICENSE', 'THIRD_PARTY_NOTICES.txt')
         $names = @($zip.Entries | ForEach-Object { $_.FullName })
         if ($names.Count -ne $expected.Count -or (Compare-Object ($names | Sort-Object) ($expected | Sort-Object))) {
             throw 'Unexpected package contents.'

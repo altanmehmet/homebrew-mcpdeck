@@ -2,8 +2,11 @@
 
 MCPDeck runs directly in PowerShell or Windows Terminal. WSL, Go and administrator
 access are not required to run the packaged application. It remains alpha software.
-Use a 64-bit Windows system. The x64 package has native CI coverage; the ARM64
-package is cross compiled and has not been tested on a native ARM64 machine.
+Use a 64-bit Windows system. Published alpha.2 has native x64 coverage; its ARM64
+archive was cross compiled. The next release's source and ZIP installation now
+pass native x64 and ARM64 CI, including host/toolchain architecture checks.
+Interactive Windows Terminal behavior and real Windows agent accounts still
+require manual acceptance testing.
 
 ## One-command public installer
 
@@ -54,8 +57,11 @@ You can also run `mcpdeck.exe` from the extracted ZIP.
 Run the new release's installer. Each version has its own directory so a running
 older executable is not overwritten. Installing the same binary twice is safe;
 an existing version with different binary contents is rejected. Older directories
-are retained. Stop older sessions and update any explicit executable paths in
-bridge configurations before removing an older directory.
+are retained. Stop older sessions, open a new terminal and run `mcpdeck sync`.
+For profiles already in bridge mode this updates the owned `mcpdeck` command to
+the running version and preserves a backup. Check `mcpdeck sync status` and restart
+the target clients. Only remove an older directory after checking every explicit
+bridge reference; a custom/unmanaged entry is not migrated automatically.
 
 The default deck is under `%USERPROFILE%\.config\mcpdeck`; `--config` can select
 another file. Application-specific profiles use Windows paths, including
@@ -68,17 +74,43 @@ MCP servers can require Node, Java, Python or Docker. These are requirements of
 the chosen server. Check `mcpdeck environment` and use the installation chat to
 review missing prerequisites. Account login, OAuth and database permissions can
 still require your input. Native `.exe` planning agents are recommended.
-Windows `.cmd`/`.bat` shims support ordinary arguments but reject shell expansion
-characters and embedded quotes. Use a direct runtime or `.exe` when necessary.
-Process cancellation terminates the direct child; descendant termination is not
-guaranteed on Windows.
+Unmodified npm Node `.cmd` shims without runtime flags or environment assignments
+are resolved to Node and their script directly, preserving complex arguments
+without shell expansion. A custom child PATH without an adjacent Node executable
+retains its original batch behavior; select an explicit runtime for complex
+arguments in that case. Other `.cmd`/`.bat` programs support ordinary arguments
+but reject shell expansion characters and embedded quotes. Use a direct runtime
+or `.exe` for custom batch programs with complex arguments.
+Windows processes start suspended and join a private Job Object before running.
+Cancellation and backend shutdown close that job and terminate its associated
+child processes. Processes started independently through other system services
+are outside this job.
+
+## Uninstall (next release)
+
+The ZIP includes `uninstall.ps1`. Close MCPDeck and any clients using its bridge,
+then run the script from the extracted package:
+
+```powershell
+.\uninstall.ps1
+```
+
+It asks for confirmation, checks installation ownership, removes managed
+application versions and their User PATH entries, and preserves your deck,
+backups and agent configurations. A custom installation uses `-Prefix`; portable
+installations use `-NoPathUpdate`. Unknown files, junctions and legacy versions
+without ownership metadata cause the operation to stop before deletion. For
+alpha.2, manually remove only the verified legacy application folder after checking
+bridge references; the new installer does not adopt or remove older versions. Reinstall the application before using retained bridge entries.
+The script is not included in the already published alpha.2 package.
 
 ## Manual acceptance test
 
 1. Install, reopen Windows Terminal, run `mcpdeck --version` and `mcpdeck --help`.
 2. Run `mcpdeck environment`; check the listed runtime and agent paths.
 3. Open `mcpdeck`, navigate using keyboard and mouse, resize the terminal, and
-   test copying. Clipboard behavior depends on terminal support; `--no-mouse`
+   test copying. Local Windows copying uses the Unicode system clipboard; SSH
+   sessions use terminal OSC52 support. `--no-mouse`
    allows normal terminal text selection.
 4. Add an MCP using **New MCP** and your logged-in planning agent. Review the
    commands, approve them, and supply secrets only in hidden inputs.

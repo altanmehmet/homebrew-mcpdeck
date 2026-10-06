@@ -4,7 +4,7 @@ MCPDeck is a terminal MCP manager for macOS, Linux and Windows. It helps configu
 servers and personal instructions across supported coding agents, with reviewed
 installation plans, backups, discovery and removal.
 
-**Alpha software.** Application source remains in a separate private repository.
+**Open source alpha software.** [Application source](https://github.com/altanmehmet/mcpdeck) is MIT licensed; earlier private development history remains archived privately.
 This public repository contains only the Homebrew formula, verification helpers,
 public signing key, release notes and compiled packages. Packages are MIT licensed
 and include Go and linked dependency license notices.
@@ -40,8 +40,9 @@ mcpdeck
 The installer downloads the pinned x64/ARM64 ZIP, checks its SHA-256 before
 execution and installs under `%LOCALAPPDATA%\MCPDeck\versions\<version>`.
 It updates your User PATH and the current terminal. Reopen other terminal windows.
-No WSL, Go or administrator privileges are required. Windows ARM64 is cross
-compiled and has not been tested on native ARM64 hardware.
+No WSL, Go or administrator privileges are required. Source CI runs native Windows ARM64 tests and installation checks. The public
+bootstrap is also checked on native ARM64; interactive terminal acceptance and
+actual Windows provider accounts remain outside verified coverage.
 
 For manual ZIP installation, portable usage, updates and test scenarios, see
 [the Windows guide](WINDOWS.md). These executables are not Authenticode signed.
@@ -56,7 +57,9 @@ sh scripts/verify-packages.sh /absolute/path/to/downloads keys/allowed_signers
 ```
 
 Expected Ed25519 key fingerprint:
-`SHA256:sd7JZx1++fUe2ETVq60wqJowhKNXS7Sk9b/qgmOo7fQ`.
+`SHA256:M8NS9J5AVuMDXSordI+V7dVzHdWKWcXTAMr/WolzzK8`.
+The alpha.1/alpha.2 key remains trusted for historical verification. Both public
+keys are retained in `keys/allowed_signers`; alpha.3 uses the new dedicated key.
 OpenSSH with `ssh-keygen -Y` support is required. Verify the fingerprint through a
 trusted maintainer channel when first establishing trust. A key obtained only
 alongside an untrusted archive does not prove the publisher's identity.
