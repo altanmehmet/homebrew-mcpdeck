@@ -36,7 +36,17 @@ jobs:
           "$RUNNER_TEMP/mcpdeck install/bin/mcpdeck" --help
 
   windows:
-    runs-on: windows-latest
+    name: ${{ matrix.name }}
+    strategy:
+      matrix:
+        include:
+          - runner: windows-latest
+            name: windows
+            arch: amd64
+          - runner: windows-11-arm
+            name: windows-arm64
+            arch: arm64
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +54,8 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = 'Stop'
+          $expectedMachine = if ('${{ matrix.arch }}' -eq 'arm64') { 0xAA64 } else { 0x8664 }
+          if ('${{ matrix.arch }}' -eq 'arm64' -and [Runtime.InteropServices.RuntimeInformation]::OSArchitecture -ne 'Arm64') { throw 'Expected a native ARM64 host.' }
           $originalUser = [Environment]::GetEnvironmentVariable('Path', 'User')
           $originalProcess = $env:Path
           $prefix = Join-Path $env:RUNNER_TEMP 'mcpdeck install'
@@ -51,6 +63,9 @@ jobs:
             & ./install.ps1 -Prefix $prefix
             $version = (Select-String -Path Formula/mcpdeck.rb -Pattern '^  version "(.*)"$').Matches.Groups[1].Value
             if ((mcpdeck --version) -ne "mcpdeck version $version" -or $LASTEXITCODE -ne 0) { throw 'Installed version differs from the tap.' }
+            $image = [IO.File]::ReadAllBytes((Get-Command mcpdeck).Source)
+            $peOffset = [BitConverter]::ToInt32($image, 0x3C)
+            if ([BitConverter]::ToUInt16($image, $peOffset + 4) -ne $expectedMachine) { throw 'Downloaded executable architecture differs from this native test.' }
             & ./install.ps1 -Prefix $prefix
             if (([Environment]::GetEnvironmentVariable('Path', 'User') -split ';' | Where-Object { $_.StartsWith($prefix) }).Count -ne 1) { throw 'Repeated install duplicated User PATH.' }
             mcpdeck --help
