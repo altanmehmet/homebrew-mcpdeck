@@ -59,7 +59,7 @@ sh scripts/verify-packages.sh /absolute/path/to/downloads keys/allowed_signers
 Expected Ed25519 key fingerprint:
 `SHA256:M8NS9J5AVuMDXSordI+V7dVzHdWKWcXTAMr/WolzzK8`.
 The alpha.1/alpha.2 key remains trusted for historical verification. Both public
-keys are retained in `keys/allowed_signers`; alpha.3 uses the new dedicated key.
+keys are retained in `keys/allowed_signers`; alpha.3 and later use the new dedicated key.
 OpenSSH with `ssh-keygen -Y` support is required. Verify the fingerprint through a
 trusted maintainer channel when first establishing trust. A key obtained only
 alongside an untrusted archive does not prove the publisher's identity.
