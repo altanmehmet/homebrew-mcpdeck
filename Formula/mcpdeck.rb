@@ -1,26 +1,26 @@
 class Mcpdeck < Formula
   desc "Manage MCP servers and global instructions across coding agents"
   homepage "https://github.com/altanmehmet/mcpdeck"
-  version "0.1.0-alpha.5"
+  version "0.1.0-alpha.6"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/altanmehmet/homebrew-mcpdeck/releases/download/v0.1.0-alpha.5/mcpdeck-darwin-arm64.tar.gz"
-      sha256 "0fbdf4ae85604e8b6e0463693f40aa472ba8ffb65f0f32fcc7be75500a0f5aa0"
+      url "https://github.com/altanmehmet/homebrew-mcpdeck/releases/download/v0.1.0-alpha.6/mcpdeck-darwin-arm64.tar.gz"
+      sha256 "d4a0e2e1d08d9527e9d5b95158f15f4ecfd9073c52a7ba3cfba475113940e419"
     else
-      url "https://github.com/altanmehmet/homebrew-mcpdeck/releases/download/v0.1.0-alpha.5/mcpdeck-darwin-amd64.tar.gz"
-      sha256 "9ac72d98625493a173f25d567f67198b7b355a6074e02043f3f2d59af1005701"
+      url "https://github.com/altanmehmet/homebrew-mcpdeck/releases/download/v0.1.0-alpha.6/mcpdeck-darwin-amd64.tar.gz"
+      sha256 "fbb5f33a7494c1850fc640ab3996b54f35b3ecedd692f6e4187366ec8efad6f1"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/altanmehmet/homebrew-mcpdeck/releases/download/v0.1.0-alpha.5/mcpdeck-linux-arm64.tar.gz"
-      sha256 "d6e679297993cf7bd03e6ef4925abb4c412da5840683c07a94eee218b645a614"
+      url "https://github.com/altanmehmet/homebrew-mcpdeck/releases/download/v0.1.0-alpha.6/mcpdeck-linux-arm64.tar.gz"
+      sha256 "de00a1b3d7be1825d7aea2218d3f60ec219db7ce79481572a6fcc27657f1058d"
     else
-      url "https://github.com/altanmehmet/homebrew-mcpdeck/releases/download/v0.1.0-alpha.5/mcpdeck-linux-amd64.tar.gz"
-      sha256 "85930350c3c36dd77da6a3a2980955c339385795d57546447401854443ec633f"
+      url "https://github.com/altanmehmet/homebrew-mcpdeck/releases/download/v0.1.0-alpha.6/mcpdeck-linux-amd64.tar.gz"
+      sha256 "64af6a43b49111d8f3e80680e470c8592e37875414ae39b2ee42a78fedd144f8"
     end
   end
 
@@ -31,7 +31,7 @@ class Mcpdeck < Formula
   end
 
   test do
-    assert_match "0.1.0-alpha.5", shell_output("#{bin}/mcpdeck --version")
+    assert_match "0.1.0-alpha.6", shell_output("#{bin}/mcpdeck --version")
     assert_match "Manage MCP servers", shell_output("#{bin}/mcpdeck --help")
   end
 end
