@@ -9,6 +9,16 @@ This public repository contains only the Homebrew formula, verification helpers,
 public signing key, release notes and compiled packages. Packages are MIT licensed
 and include Go and linked dependency license notices.
 
+## Current CLI release
+
+Version **0.1.0-alpha.5** adds name-only MCP installation, detected planner
+selection, safe initialization of empty agent settings, and instruction editor
+navigation fixes. This distribution contains the CLI; desktop packages are excluded.
+
+[Release notes and signed packages](https://github.com/altanmehmet/homebrew-mcpdeck/releases/tag/v0.1.0-alpha.5).
+Homebrew and the Windows bootstrap pin the same release with architecture-specific
+checksums. Updating keeps personal MCPDeck data and agent settings.
+
 ## Install
 
 ```sh
