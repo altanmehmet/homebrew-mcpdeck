@@ -11,11 +11,11 @@ and include Go and linked dependency license notices.
 
 ## Current CLI release
 
-Version **0.1.0-alpha.6** fixes Space key input in installation chat, adds
-CLI model selection and Copilot planning, and discovers planners in common user
-and NVM install locations. This distribution contains the CLI; desktop packages are excluded.
+Version **0.1.0-alpha.7** adds Antigravity CLI (`agy`) planning and a model
+picker based on `agy models`. Chat Space key fixes, Copilot planning and user/NVM
+planner discovery are retained. This distribution contains the CLI; desktop packages are excluded.
 
-[Release notes and signed packages](https://github.com/altanmehmet/homebrew-mcpdeck/releases/tag/v0.1.0-alpha.6).
+[Release notes and signed packages](https://github.com/altanmehmet/homebrew-mcpdeck/releases/tag/v0.1.0-alpha.7).
 Homebrew and the Windows bootstrap pin the same release with architecture-specific
 checksums. Updating keeps personal MCPDeck data and agent settings.
 
