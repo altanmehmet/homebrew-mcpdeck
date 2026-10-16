@@ -10,10 +10,10 @@ function Get-MCPDeckArchiveChecksum([string]$Path) {
     try { return [BitConverter]::ToString($sha.ComputeHash($stream)).Replace('-', '').ToLowerInvariant() }
     finally { $stream.Dispose(); $sha.Dispose() }
 }
-$version = '0.1.0-alpha.7'
+$version = '0.1.0-alpha.8'
 $checksums = @{
-    amd64 = '33011352631a176642d354fb295077ab507592ccf3d5a6e9a47c862f9c5d3d8d'
-    arm64 = 'a3492628e4596c7515165aee1ce3e51ad81441f33ffdb5d8030a3a3d55d74aab'
+    amd64 = '6a8501d5cb0f38e00f61ee1f1d09c38bb6d035744f401182602f060a705ff6c0'
+    arm64 = 'c7838284fc913218b67b8cdce2a50047f8d9258ca81f8cb6d09dc1c72e29d45a'
 }
 $machine = $env:PROCESSOR_ARCHITECTURE
 if ($env:PROCESSOR_ARCHITEW6432) { $machine = $env:PROCESSOR_ARCHITEW6432 }
